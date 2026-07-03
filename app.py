@@ -48,6 +48,14 @@ from src.importers.tabular import (
 from src.importers.validation import validate_and_clean_import
 from src.specs import list_spec_profiles
 from src.templates import build_template_workbook, list_template_definitions
+from src.workspace import (
+    build_project_workspace,
+    export_workspace_json,
+    import_workspace_json,
+    product_card_rows,
+    supplier_card_rows,
+    task_rows,
+)
 
 
 st.set_page_config(
@@ -125,6 +133,7 @@ with st.sidebar:
         "spreadsheet": t("upload_csv_excel", language),
         "urls": t("import_from_product_urls", language),
         "templates": t("template_center", language),
+        "workspace": "Workspace" if language == "en" else "项目工作台",
     }
     selected_mode_label = st.radio(
         t("input_mode", language),
@@ -185,6 +194,85 @@ with st.sidebar:
             value=5.0,
             step=0.5,
         )
+
+
+
+if data_source_mode == "workspace":
+    st.subheader("Project Workspace" if language == "en" else "项目工作台")
+    st.caption(
+        "Review product pool, supplier pool and open follow-up tasks from the latest connector analysis or an uploaded project JSON."
+        if language == "en"
+        else "从最新连接器分析或上传的项目 JSON 中查看产品池、供应商池和待追问事项。"
+    )
+
+    uploaded_workspace = st.file_uploader(
+        "Upload project JSON" if language == "en" else "上传项目 JSON",
+        type=["json"],
+    )
+
+    workspace = None
+    if uploaded_workspace is not None:
+        try:
+            workspace = import_workspace_json(uploaded_workspace.getvalue())
+            st.success("Project loaded." if language == "en" else "项目已加载。")
+        except ValueError as exc:
+            st.error(str(exc))
+            st.stop()
+    else:
+        connector_result = st.session_state.get("product_page_connector_result")
+        if connector_result is not None:
+            default_profile = "generic_hardware"
+            readiness = product_readiness_summary_frame(connector_result, profile=default_profile, language=language)
+            suppliers = supplier_comparison_frame(connector_result, profile=default_profile, language=language)
+            pool = product_pool_summary_frame(connector_result, profile=default_profile, language=language)
+            follow_up = supplier_follow_up_frame(connector_result, profile=default_profile, language=language)
+            workspace = build_project_workspace(
+                project_name="Current Connector Analysis" if language == "en" else "当前连接器分析",
+                profile=default_profile,
+                language=language,
+                product_pool=pool,
+                supplier_comparison=suppliers,
+                supplier_follow_up=follow_up,
+            )
+
+    if workspace is None:
+        st.info(
+            "Run the Product URL Connector first, or upload a project JSON."
+            if language == "en"
+            else "请先运行产品 URL 连接器，或上传项目 JSON。"
+        )
+        st.stop()
+
+    metrics = workspace.metrics
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.metric("Products" if language == "en" else "产品", f"{metrics.product_count:,}")
+    c2.metric("Suppliers" if language == "en" else "供应商", f"{metrics.supplier_count:,}")
+    c3.metric("Review candidates" if language == "en" else "评审候选", f"{metrics.review_candidate_count:,}")
+    c4.metric("High risk" if language == "en" else "高风险", f"{metrics.high_risk_product_count:,}")
+    c5.metric("Open questions" if language == "en" else "待追问", f"{metrics.open_follow_up_count:,}")
+
+    st.download_button(
+        "Download project JSON" if language == "en" else "下载项目 JSON",
+        data=export_workspace_json(workspace),
+        file_name="project_workspace.json",
+        mime="application/json",
+    )
+
+    tab_products, tab_suppliers, tab_tasks = st.tabs(
+        [
+            "Product Pool" if language == "en" else "产品池",
+            "Supplier Pool" if language == "en" else "供应商池",
+            "Follow-up Tasks" if language == "en" else "追问任务",
+        ]
+    )
+    with tab_products:
+        st.dataframe(product_card_rows(workspace), use_container_width=True, hide_index=True)
+    with tab_suppliers:
+        st.dataframe(supplier_card_rows(workspace), use_container_width=True, hide_index=True)
+    with tab_tasks:
+        st.dataframe(task_rows(workspace), use_container_width=True, hide_index=True)
+
+    st.stop()
 
 
 if data_source_mode == "templates":
