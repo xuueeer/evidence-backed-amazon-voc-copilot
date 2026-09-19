@@ -1,0 +1,31 @@
+review_id,product_id,rating,review_text,review_date,source_type
+R001,B0FIT001,2,"The earbuds sound good, but they slowly work loose when I run and I have to push them back in.",2026-05-03,demo_synthetic
+R002,B0FIT001,5,"I ran a 10K with the medium tips and they stayed secure the entire time.",2026-05-06,demo_synthetic
+R003,B0FIT002,1,"The left earbud falls out during burpees even after trying every included tip.",2026-05-08,demo_synthetic
+R004,B0FIT003,2,"Comfortable for walking, but sweat makes the buds slip during faster workouts.",2026-05-10,demo_synthetic
+R005,B0FIT002,4,"The wing tips keep them stable for cycling and treadmill sessions.",2026-05-12,demo_synthetic
+R006,B0FIT004,2,"After about forty minutes the housing presses against my ear and becomes painful.",2026-05-14,demo_synthetic
+R007,B0FIT003,1,"Battery dropped from full to empty in under four hours with noise cancelling on.",2026-05-16,demo_synthetic
+R008,B0FIT001,5,"Battery lasted through a full workday and my evening commute.",2026-05-17,demo_synthetic
+R009,B0FIT004,2,"The charging case is bulky and does not fit comfortably in a jeans pocket.",2026-05-18,demo_synthetic
+R010,B0FIT002,5,"The compact case is easy to carry and the battery indicator is useful.",2026-05-19,demo_synthetic
+R011,B0FIT003,2,"People on calls say my voice sounds distant when there is wind outside.",2026-05-20,demo_synthetic
+R012,B0FIT001,4,"Call quality is clear in a quiet office, but I have not tested it outdoors.",2026-05-21,demo_synthetic
+R013,B0FIT004,1,"Bluetooth cuts out for a second whenever my phone is in my back pocket.",2026-05-22,demo_synthetic
+R014,B0FIT002,5,"Connection has been stable across my apartment and pairing was immediate.",2026-05-23,demo_synthetic
+R015,B0FIT003,2,"The touch control pauses music whenever I adjust the fit.",2026-05-24,demo_synthetic
+R016,B0FIT001,4,"Controls are responsive once you learn where to tap.",2026-05-25,demo_synthetic
+R017,B0FIT004,2,"The app offers only three equalizer presets and none reduce the heavy bass enough.",2026-05-26,demo_synthetic
+R018,B0FIT002,5,"The equalizer is simple and the vocal preset works well for podcasts.",2026-05-27,demo_synthetic
+R019,B0FIT003,1,"One earbud stopped charging because the case contacts did not line up reliably.",2026-05-28,demo_synthetic
+R020,B0FIT001,5,"The magnets pull both buds into the charging position every time.",2026-05-29,demo_synthetic
+R021,B0FIT004,2,"Noise cancelling reduces the low hum but voices still come through clearly.",2026-05-30,demo_synthetic
+R022,B0FIT002,5,"ANC handles train noise better than I expected at this price.",2026-06-01,demo_synthetic
+R023,B0FIT003,2,"There is no way to disable the loud voice prompts, which is annoying at night.",2026-06-02,demo_synthetic
+R024,B0FIT001,4,"Voice prompts are brief and not distracting for me.",2026-06-03,demo_synthetic
+R025,B0FIT004,1,"The smallest ear tips are still too large for my ears.",2026-06-04,demo_synthetic
+R026,B0FIT002,5,"Four tip sizes made it easy to get a good seal for small ears.",2026-06-05,demo_synthetic
+R027,B0FIT003,2,"The glossy case picked up scratches during the first week.",2026-06-06,demo_synthetic
+R028,B0FIT001,5,"The matte case still looks new after a month in my gym bag.",2026-06-07,demo_synthetic
+R029,B0FIT004,3,"Audio is balanced, although the maximum volume is lower than my old pair.",2026-06-08,demo_synthetic
+R030,B0FIT002,4,"Sound is detailed enough for workouts and the volume range is comfortable.",2026-06-09,demo_synthetic

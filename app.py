@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -48,6 +49,7 @@ from src.importers.tabular import (
 from src.importers.validation import validate_and_clean_import
 from src.specs import list_spec_profiles
 from src.templates import build_template_workbook, list_template_definitions
+from src.voc_dashboard import render_voc_dashboard
 from src.workspace import (
     build_project_workspace,
     export_workspace_json,
@@ -59,7 +61,7 @@ from src.workspace import (
 
 
 st.set_page_config(
-    page_title="Amazon Market Research Dashboard",
+    page_title="Evidence-Backed Amazon VOC Copilot",
     layout="wide",
 )
 
@@ -82,8 +84,7 @@ def _language_select(label: str, default: str = "en") -> str:
 
 
 with st.sidebar:
-    language = _language_select("Language / 语言", "en")
-    export_language = _language_select(t("export_language", language), language)
+    language = _language_select("Language / 语言", "zh-CN")
 
 st.title(t("app_title", language))
 st.caption(t("app_caption", language))
@@ -129,12 +130,18 @@ with st.sidebar:
     st.header(t("data_source", language))
 
     mode_labels = {
+        "voc": t("voc_evidence_ledger", language),
         "sample": t("use_sample_data", language),
         "spreadsheet": t("upload_csv_excel", language),
-        "urls": t("import_from_product_urls", language),
         "templates": t("template_center", language),
         "workspace": "Workspace" if language == "en" else "项目工作台",
     }
+    if os.environ.get("ENABLE_PUBLIC_URL_IMPORT", "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }:
+        mode_labels["urls"] = t("import_from_product_urls", language)
     selected_mode_label = st.radio(
         t("input_mode", language),
         list(mode_labels.values()),
@@ -143,6 +150,10 @@ with st.sidebar:
     data_source_mode = {
         value: key for key, value in mode_labels.items()
     }[selected_mode_label]
+
+    export_language = language
+    if data_source_mode != "voc":
+        export_language = _language_select(t("export_language", language), language)
 
     uploaded_file = None
     if data_source_mode == "spreadsheet":
@@ -194,6 +205,11 @@ with st.sidebar:
             value=5.0,
             step=0.5,
         )
+
+
+if data_source_mode == "voc":
+    render_voc_dashboard(language=language)
+    st.stop()
 
 
 

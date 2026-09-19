@@ -1,0 +1,31 @@
+review_id,expected_theme,expected_stance,annotation_note
+R001,fit_comfort,support,Loosens while running
+R002,fit_comfort,contradict,Stays secure during a run
+R003,fit_comfort,support,Falls out during exercise
+R004,fit_comfort,support,Slips during faster workouts
+R005,fit_comfort,contradict,Wing tips remain stable
+R006,fit_comfort,support,Pressure causes discomfort
+R007,battery,support,Runtime is shorter than expected
+R008,battery,contradict,Runtime covers a full day
+R009,case_portability,support,Case is too bulky for a pocket
+R010,case_portability,contradict,Case is compact and useful
+R011,call_quality,support,Voice sounds distant outdoors
+R012,call_quality,contradict,Calls are clear in a quiet office
+R013,connectivity,support,Connection drops with phone in pocket
+R014,connectivity,contradict,Connection is stable at home
+R015,controls,support,Touch control triggers accidentally
+R016,controls,contradict,Controls work after familiarization
+R017,app_equalizer,support,Equalizer options are insufficient
+R018,app_equalizer,contradict,Vocal preset works well
+R019,durability,support,Charging contacts fail to align
+R020,durability,contradict,Charging alignment is reliable
+R021,noise_cancelling,support,Voices remain audible through ANC
+R022,noise_cancelling,contradict,ANC handles train noise well
+R023,voice_prompts,support,Prompts cannot be disabled
+R024,voice_prompts,contradict,Prompts are brief and unobtrusive
+R025,fit_comfort,support,Included tips are too large
+R026,fit_comfort,contradict,Four sizes support a good seal
+R027,durability,support,Case scratches quickly
+R028,durability,contradict,Matte case resists visible wear
+R029,sound_volume,support,Maximum volume is lower than expected
+R030,sound_volume,contradict,Sound and volume are satisfactory

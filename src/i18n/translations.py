@@ -13,15 +13,16 @@ LANGUAGE_DISPLAY_NAMES = {
 
 TEXT: dict[str, dict[str, str]] = {
     "en": {
-        "app_title": "Amazon Market Research Dashboard",
+        "app_title": "Evidence-Backed Amazon VOC Copilot",
         "app_caption": (
-            "Import product research spreadsheets or public product pages, "
-            "standardize fields, validate data and evaluate market and profit opportunities."
+            "Trace product opportunities to supporting reviews, counter-evidence "
+            "and explicit unknowns before making a decision."
         ),
         "language": "Language",
         "data_source": "Data source",
         "input_mode": "Input mode",
         "use_sample_data": "Use included sample data",
+        "voc_evidence_ledger": "VOC evidence ledger",
         "upload_csv_excel": "Upload CSV or Excel",
         "import_from_product_urls": "Import from product URLs",
         "template_center": "Template Center",
@@ -122,12 +123,13 @@ TEXT: dict[str, dict[str, str]] = {
         "blank_value_normalized": "Blank {field} will be replaced with '{replacement}'.",
     },
     "zh-CN": {
-        "app_title": "亚马逊市场调研仪表盘",
-        "app_caption": "导入产品调研表或公开产品页面，完成字段标准化、数据校验、市场机会与利润评估。",
+        "app_title": "Amazon VOC 证据决策台",
+        "app_caption": "在做选品判断前，将每条机会结论追溯到支持评论、反向证据和明确未知项。",
         "language": "语言",
         "data_source": "数据来源",
         "input_mode": "输入方式",
         "use_sample_data": "使用示例数据",
+        "voc_evidence_ledger": "VOC 证据账本",
         "upload_csv_excel": "上传 CSV 或 Excel",
         "import_from_product_urls": "从产品页面 URL 导入",
         "template_center": "模板中心",

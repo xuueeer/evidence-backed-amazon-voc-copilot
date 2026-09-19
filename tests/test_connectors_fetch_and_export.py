@@ -2,13 +2,19 @@ from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
 
+import httpx
 import pandas as pd
 import pytest
 
 from src.connectors.export import build_product_page_workbook
 from src.connectors.models import ConnectorIssue, FetchLog, FetchResult, ProductPageRecord
 from src.connectors.product_page import collect_product_pages
-from src.connectors.web_fetcher import WebFetchError, normalize_url, validate_public_url
+from src.connectors.web_fetcher import (
+    WebFetchError,
+    fetch_url,
+    normalize_url,
+    validate_public_url,
+)
 
 FIXTURES = Path(__file__).parent / "fixtures" / "product_pages"
 
@@ -27,6 +33,52 @@ def test_validate_public_url_rejects_non_http_and_localhost():
 
     with pytest.raises(WebFetchError, match="Localhost"):
         validate_public_url("http://localhost:8501")
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "http://127.0.0.2/admin",
+        "http://10.0.0.8/internal",
+        "http://169.254.169.254/latest/meta-data",
+        "http://[::1]/admin",
+        "http://[fe80::1]/internal",
+    ],
+)
+def test_validate_public_url_rejects_non_public_ip_ranges(url: str):
+    with pytest.raises(WebFetchError, match="non-public"):
+        validate_public_url(url)
+
+
+def test_fetch_url_revalidates_redirect_destinations():
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.host == "93.184.216.34":
+            return httpx.Response(
+                302,
+                request=request,
+                headers={"location": "http://169.254.169.254/latest/meta-data"},
+            )
+        raise AssertionError("A non-public redirect destination must not be requested.")
+
+    with httpx.Client(
+        transport=httpx.MockTransport(handler),
+        follow_redirects=True,
+    ) as client:
+        record, log, issue, html = fetch_url(
+            "https://93.184.216.34/product",
+            client=client,
+        )
+
+    assert record.status == "failed"
+    assert log.success is False
+    assert issue is not None
+    assert "non-public" in issue.message
+    assert html == ""
+
+
+def test_validate_public_url_rejects_invalid_port():
+    with pytest.raises(WebFetchError, match="invalid port"):
+        validate_public_url("https://example.com:99999/product")
 
 
 def test_collect_product_pages_uses_fetch_logs_and_parses_records(monkeypatch):

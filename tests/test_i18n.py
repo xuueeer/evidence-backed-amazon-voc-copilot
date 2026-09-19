@@ -21,6 +21,7 @@ def test_normalize_language_falls_back_to_english():
 def test_translates_known_keys():
     assert t("data_source", "en") == "Data source"
     assert t("data_source", "zh-CN") == "数据来源"
+    assert t("voc_evidence_ledger", "zh-CN") == "VOC 证据账本"
 
 
 def test_unknown_key_returns_key():
