@@ -1,14 +1,36 @@
 # Evidence-Backed Amazon VOC Copilot
 
-一个面向跨境电商选品与产品定义的可解释 VOC（Voice of Customer）决策台。它不只总结评论，而是把每条痛点判断连接到**支持证据、反向证据、覆盖范围和未知项**，让运营、产品和供应链人员能够复核 AI 或规则给出的结论。
+> 面向跨境电商选品与产品定义：让每条用户洞察都能回到评论原文，同时看见支持证据、反向证据和数据缺口。
 
-> 项目边界：本项目不是 Amazon 官方工具，不接入 Amazon 实时数据，也不绕过登录、验证码或网站访问限制。仓库内演示数据均为人工编写的合成数据，不能代表真实市场表现。
+[![CI](https://github.com/xuueeer/evidence-backed-amazon-voc-copilot/actions/workflows/tests.yml/badge.svg)](https://github.com/xuueeer/evidence-backed-amazon-voc-copilot/actions/workflows/tests.yml)
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.35%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
+[![Tests](https://img.shields.io/badge/tests-259%20passed-16A34A)](tests)
+[![License: MIT](https://img.shields.io/badge/License-MIT-0F766E.svg)](LICENSE)
 
-## 在线演示
+[**Hosted Demo**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/) *(Streamlit sign-in currently required)* · [**Quick Start**](#本地运行) · [**3-Minute Interview Demo**](#三分钟面试演示) · [**English Docs**](docs/README.en.md)
 
-[打开 Streamlit 公网 Demo](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/)
+![Evidence ledger showing traceable VOC claims, support and counter-evidence](docs/assets/voc-evidence-ledger.png)
 
-内置 Mock 演示无需 API Key，打开后即可复核 30 条合成评论的支持证据、反向证据和建议引用。公共部署不启用商品 URL 抓取，也不配置共享模型密钥；页面数据与结论仍只是合成样例和待复核推断。
+## 30 秒看懂项目
+
+| 普通评论总结 | 本项目的 Evidence Ledger |
+| --- | --- |
+| 输出一段“用户抱怨什么” | 每条结论引用可复核的 `review_id` 和原文 |
+| 只展示支持观点的文本 | 并列支持与反向证据，显示冲突 |
+| 模型同时生成文字和数字 | LLM 只做可选结构化提取；计数、覆盖率和门槛由确定性代码计算 |
+| 即使数据不足也给出建议 | 低覆盖或冲突过高时标记 `unknown`，停止确定性建议 |
+| 结果难以留档复查 | 导出带原文引用的 Markdown / CSV / JSON 审计记录 |
+
+**演示路径：** `上传评论 → 查看痛点 → 展开证据 → 对照反向评论 → 查看证据强度 → 导出决策报告`
+
+> **数据边界：** 内置 30 条评论和 4 个商品均为人工编写的合成数据。它们用于演示证据工作流，不代表真实 Amazon 市场、模型准确率或业务提升。本项目不是 Amazon 官方工具，不接入 Amazon 实时数据，也不绕过登录或网站访问限制。
+
+## Demo 状态
+
+已部署 [Streamlit Demo](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/)，内置 Mock 模式无需 API Key。截至 2026-09-20，无登录 Cookie 的请求会被 Streamlit 重定向到登录页；因此仓库暂不将该链接宣称为“匿名公开”。本地 Mock 流程与导出功能仍可完整运行。
+
+公共部署不启用商品 URL 抓取，也不配置共享模型密钥。
 
 ## 为什么做这个项目
 
