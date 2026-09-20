@@ -116,7 +116,7 @@ def _stretch_kwargs(component: Any) -> dict[str, Any]:
     return {"use_container_width": True}
 
 
-def _inject_styles() -> None:
+def inject_app_styles() -> None:
     st.markdown(
         """
         <style>
@@ -196,6 +196,32 @@ def _inject_styles() -> None:
           height: 40px;
           justify-content: center;
           width: 40px;
+        }
+        .app-page-header {
+          margin: 4px 0 26px;
+          max-width: 780px;
+          padding: 5px 0 2px;
+        }
+        .app-page-header h1 {
+          color: var(--voc-forest-2);
+          font-size: 2.1rem;
+          font-weight: 680;
+          line-height: 1.15;
+          margin: 6px 0 9px;
+          overflow-wrap: anywhere;
+        }
+        .app-page-header p {
+          color: var(--voc-muted);
+          font-size: 0.94rem;
+          line-height: 1.58;
+          margin: 0;
+          max-width: 70ch;
+        }
+        .app-page-kicker {
+          color: var(--voc-support);
+          font-size: 0.72rem;
+          font-weight: 700;
+          text-transform: uppercase;
         }
         .voc-hero {
           align-items: stretch;
@@ -581,6 +607,56 @@ def _inject_styles() -> None:
           border-color: var(--voc-line);
           border-radius: 8px;
         }
+        [data-testid="stHeadingWithActionElements"] h1 {
+          color: var(--voc-forest-2);
+          font-size: 2.1rem;
+          font-weight: 680;
+          line-height: 1.15;
+        }
+        [data-testid="stHeadingWithActionElements"] h2 {
+          color: var(--voc-forest-2);
+          font-size: 1.28rem;
+          font-weight: 650;
+          line-height: 1.3;
+        }
+        [data-testid="stHeadingWithActionElements"] h3 {
+          color: var(--voc-forest-2);
+          font-size: 1.04rem;
+          font-weight: 650;
+          line-height: 1.35;
+        }
+        [data-testid="stMetric"] {
+          background: var(--voc-panel);
+          border: 1px solid var(--voc-line);
+          border-radius: 8px;
+          min-height: 108px;
+          padding: 14px 16px;
+        }
+        [data-testid="stMetricLabel"] p {
+          color: var(--voc-muted);
+          font-size: 0.76rem;
+          font-weight: 650;
+        }
+        [data-testid="stMetricValue"] {
+          color: var(--voc-forest-2);
+          font-size: 1.72rem;
+          font-weight: 620;
+        }
+        [data-testid="stDataFrame"],
+        [data-testid="stDataEditor"] {
+          background: var(--voc-panel);
+          border: 1px solid var(--voc-line);
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        [data-testid="stVerticalBlockBorderWrapper"] {
+          background: var(--voc-panel);
+          border-color: var(--voc-line) !important;
+          border-radius: 8px;
+        }
+        [data-testid="stAlertContainer"] {
+          border-radius: 8px;
+        }
         [data-testid="stTab"] {
           color: var(--voc-muted);
           min-height: 44px !important;
@@ -615,6 +691,35 @@ def _inject_styles() -> None:
           background: var(--voc-forest);
           border-color: var(--voc-forest);
           color: #ffffff;
+        }
+        .stDownloadButton button {
+          background: #ffffff;
+          border-color: var(--voc-support);
+          color: var(--voc-forest);
+        }
+        .stDownloadButton button:hover {
+          background: var(--voc-support-soft);
+          border-color: var(--voc-support);
+          color: var(--voc-forest);
+        }
+        [data-baseweb="select"] > div,
+        [data-testid="stTextInput"] input,
+        [data-testid="stNumberInput"] input,
+        [data-testid="stTextArea"] textarea {
+          border-color: var(--voc-line);
+          border-radius: 6px;
+          min-height: 44px;
+        }
+        [data-testid="stNumberInput"] button,
+        [data-testid="stSelectbox"] button,
+        [data-testid="stMultiSelect"] button {
+          min-height: 44px;
+          min-width: 44px;
+        }
+        [data-testid="stSidebar"] [data-testid="stNumberInput"] input,
+        [data-testid="stSidebar"] [data-baseweb="select"] > div {
+          background: #ffffff;
+          color: var(--voc-ink);
         }
         .stButton button:hover {
           background: var(--voc-green);
@@ -656,6 +761,10 @@ def _inject_styles() -> None:
             padding-top: 1.25rem;
           }
           .voc-hero h1 { font-size: 1.75rem; }
+          .app-page-header { margin-bottom: 20px; }
+          .app-page-header h1,
+          [data-testid="stHeadingWithActionElements"] h1 { font-size: 1.75rem; }
+          .app-page-header p { font-size: 1rem; }
           .voc-hero p,
           .voc-claim,
           .voc-review-text,
@@ -1506,7 +1615,6 @@ def _render_byok(result: AnalysisResult, language: str) -> None:
 
 
 def render_voc_dashboard(*, language: str) -> None:
-    _inject_styles()
     header_slot = st.empty()
     source = _review_source_control(language)
     provenance_slot = st.empty()

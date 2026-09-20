@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+from html import escape
 from pathlib import Path
 
 import pandas as pd
@@ -49,7 +50,7 @@ from src.importers.tabular import (
 from src.importers.validation import validate_and_clean_import
 from src.specs import list_spec_profiles
 from src.templates import build_template_workbook, list_template_definitions
-from src.voc_dashboard import render_voc_dashboard
+from src.voc_dashboard import inject_app_styles, render_voc_dashboard
 from src.workspace import (
     build_project_workspace,
     export_workspace_json,
@@ -64,6 +65,7 @@ st.set_page_config(
     page_title="Evidence-Backed Amazon VOC Copilot",
     layout="wide",
 )
+inject_app_styles()
 
 sample_path = Path(__file__).parent / "data" / "sample_products.csv"
 
@@ -87,6 +89,19 @@ with st.sidebar:
     sidebar_identity = st.empty()
     language = _language_select("Language / 语言", "zh-CN")
 
+sidebar_identity.markdown(
+    """
+    <div class="voc-sidebar-brand">
+      <span class="voc-sidebar-mark">V</span>
+      <span>
+        <strong>Evidence Ledger</strong>
+        <small>Amazon VOC Copilot</small>
+      </span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 def _localized_frame(frame: pd.DataFrame, language: str) -> pd.DataFrame:
     return frame.rename(columns={column: column_label(str(column), language) for column in frame.columns})
@@ -96,10 +111,80 @@ def _parse_url_lines(value: str) -> list[str]:
     return [line.strip() for line in value.splitlines() if line.strip()]
 
 
-def _show_template_center(language: str) -> None:
-    st.subheader(t("template_center", language))
-    st.caption(t("template_center_intro", language))
+def _mode_header_html(mode: str, language: str) -> str:
+    copy = {
+        "sample": {
+            "en": (
+                "PRODUCT RESEARCH · INCLUDED DATA",
+                "Product research workspace",
+                "Review the included dataset, confirm its fields, and compare market and profit signals.",
+            ),
+            "zh-CN": (
+                "PRODUCT RESEARCH · INCLUDED DATA",
+                "产品调研工作台",
+                "使用内置示例数据校验字段，并对比市场与利润信号。",
+            ),
+        },
+        "spreadsheet": {
+            "en": (
+                "PRODUCT RESEARCH · USER UPLOAD",
+                "Spreadsheet import workspace",
+                "Validate a CSV or Excel file before using it for market and profit analysis.",
+            ),
+            "zh-CN": (
+                "PRODUCT RESEARCH · USER UPLOAD",
+                "表格导入工作台",
+                "先校验 CSV 或 Excel 的字段与数据质量，再进入市场与利润分析。",
+            ),
+        },
+        "templates": {
+            "en": (
+                "DATA OPERATIONS · STANDARD INPUTS",
+                "Template center",
+                "Download structured inputs for product research, supplier evaluation, and specification collection.",
+            ),
+            "zh-CN": (
+                "DATA OPERATIONS · STANDARD INPUTS",
+                "标准模板中心",
+                "下载用于产品调研、供应商评估和规格收集的结构化模板。",
+            ),
+        },
+        "workspace": {
+            "en": (
+                "PROJECT OPERATIONS · DECISION TRACKING",
+                "Project workspace",
+                "Review product candidates, suppliers, and unresolved follow-up tasks in one operational view.",
+            ),
+            "zh-CN": (
+                "PROJECT OPERATIONS · DECISION TRACKING",
+                "项目工作台",
+                "在同一工作视图中复核产品候选、供应商与待追问任务。",
+            ),
+        },
+        "urls": {
+            "en": (
+                "PUBLIC SOURCES · SPECIFICATION INTAKE",
+                "Public product page connector",
+                "Collect auditable product and specification data from permitted public pages.",
+            ),
+            "zh-CN": (
+                "PUBLIC SOURCES · SPECIFICATION INTAKE",
+                "公开产品页面连接器",
+                "从允许访问的公开页面收集可追溯的产品与规格数据。",
+            ),
+        },
+    }
+    kicker, title, description = copy[mode][language]
+    return (
+        '<header class="app-page-header">'
+        f'<div class="app-page-kicker">{escape(kicker)}</div>'
+        f'<h1>{escape(title)}</h1>'
+        f'<p>{escape(description)}</p>'
+        "</header>"
+    )
 
+
+def _show_template_center(language: str) -> None:
     button_keys = {
         "market_research": "download_market_research_template",
         "supplier_quote": "download_supplier_quote_template",
@@ -206,33 +291,16 @@ with st.sidebar:
 
 
 if data_source_mode == "voc":
-    sidebar_identity.markdown(
-        """
-        <div class="voc-sidebar-brand">
-          <span class="voc-sidebar-mark">V</span>
-          <span>
-            <strong>Evidence Ledger</strong>
-            <small>Amazon VOC Copilot</small>
-          </span>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
     render_voc_dashboard(language=language)
     st.stop()
 
 
-st.title(t("app_title", language))
-st.caption(t("app_caption", language))
+st.markdown(
+    _mode_header_html(data_source_mode, language),
+    unsafe_allow_html=True,
+)
 
 if data_source_mode == "workspace":
-    st.subheader("Project Workspace" if language == "en" else "项目工作台")
-    st.caption(
-        "Review product pool, supplier pool and open follow-up tasks from the latest connector analysis or an uploaded project JSON."
-        if language == "en"
-        else "从最新连接器分析或上传的项目 JSON 中查看产品池、供应商池和待追问事项。"
-    )
-
     uploaded_workspace = st.file_uploader(
         "Upload project JSON" if language == "en" else "上传项目 JSON",
         type=["json"],
@@ -309,8 +377,6 @@ if data_source_mode == "templates":
 
 
 if data_source_mode == "urls":
-    st.subheader(t("product_page_connector", language))
-    st.caption(t("product_page_connector_caption", language))
     st.warning(t("connector_scope_warning", language), icon="⚠️")
 
     profile_options = {

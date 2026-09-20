@@ -14,6 +14,7 @@ from src.voc_dashboard import (
     _status_presentation,
     _stretch_kwargs,
     _summary_grid_html,
+    inject_app_styles,
 )
 
 
@@ -26,6 +27,26 @@ def test_stretch_kwargs_supports_old_and_new_streamlit_apis() -> None:
 
     assert _stretch_kwargs(legacy_component) == {"use_container_width": True}
     assert _stretch_kwargs(current_component) == {"width": "stretch"}
+
+
+def test_shared_app_styles_cover_non_voc_workspace_components(monkeypatch) -> None:
+    calls: list[tuple[str, bool]] = []
+
+    def capture(markup: str, *, unsafe_allow_html: bool = False) -> None:
+        calls.append((markup, unsafe_allow_html))
+
+    monkeypatch.setattr("src.voc_dashboard.st.markdown", capture)
+
+    inject_app_styles()
+
+    assert len(calls) == 1
+    css, unsafe = calls[0]
+    assert unsafe is True
+    assert ".app-page-header" in css
+    assert '[data-testid="stSidebar"]' in css
+    assert '[data-testid="stMetric"]' in css
+    assert '[data-testid="stDataFrame"]' in css
+    assert '[data-testid="stNumberInput"]' in css
 
 
 def test_deterministic_rationale_is_localized_for_chinese_ui() -> None:
