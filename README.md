@@ -8,7 +8,7 @@
 [![Tests](https://img.shields.io/badge/tests-259%20passed-16A34A)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0F766E.svg)](LICENSE)
 
-[**Hosted Demo**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/) *(Streamlit sign-in currently required)* · [**Quick Start**](#本地运行) · [**3-Minute Interview Demo**](#三分钟面试演示) · [**English Docs**](docs/README.en.md)
+[**Open Demo**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true) *(anonymous embed entry)* · [**Quick Start**](#本地运行) · [**3-Minute Interview Demo**](#三分钟面试演示) · [**English Docs**](docs/README.en.md)
 
 ![Evidence ledger showing a traceable VOC claim with support and counter-evidence counts](docs/assets/voc-evidence-ledger.png)
 
@@ -28,7 +28,7 @@
 
 ## Demo 状态
 
-已部署 [Streamlit Demo](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/)，内置 Mock 模式无需 API Key。截至 2026-09-20，无登录 Cookie 的请求会被 Streamlit 重定向到登录页；因此仓库暂不将该链接宣称为“匿名公开”。本地 Mock 流程与导出功能仍可完整运行。
+已部署 [Streamlit Demo](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true)，内置 Mock 模式无需 API Key。默认根 URL 在当前 Streamlit 平台行为下会将无 Cookie 请求重定向到登录页，但公开的 `?embed=true` 入口已经过无账号浏览器验证，可直接打开 Mock 页面。
 
 公共部署不启用商品 URL 抓取，也不配置共享模型密钥。
 
