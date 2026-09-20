@@ -5,7 +5,7 @@
 [![CI](https://github.com/xuueeer/evidence-backed-amazon-voc-copilot/actions/workflows/tests.yml/badge.svg)](https://github.com/xuueeer/evidence-backed-amazon-voc-copilot/actions/workflows/tests.yml)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.35%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Tests](https://img.shields.io/badge/tests-259%20passed-16A34A)](tests)
+[![Tests](https://img.shields.io/badge/tests-281%20passed-16A34A)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0F766E.svg)](LICENSE)
 
 [**Open Demo**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true) *(anonymous embed entry)* · [**Quick Start**](#本地运行) · [**3-Minute Interview Demo**](#三分钟面试演示) · [**English Docs**](docs/README.en.md)
