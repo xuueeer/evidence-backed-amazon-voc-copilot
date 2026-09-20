@@ -47,6 +47,14 @@ def test_shared_app_styles_cover_non_voc_workspace_components(monkeypatch) -> No
     assert '[data-testid="stMetric"]' in css
     assert '[data-testid="stDataFrame"]' in css
     assert '[data-testid="stNumberInput"]' in css
+    assert (
+        '[data-testid="stFileUploader"]\n'
+        '        [data-testid="stMarkdownContainer"] p'
+    ) in css
+    assert (
+        '[data-testid="stFileUploader"]\n'
+        '        [data-testid="stFileUploaderDropzoneInstructions"] span'
+    ) in css
 
 
 def test_deterministic_rationale_is_localized_for_chinese_ui() -> None:
