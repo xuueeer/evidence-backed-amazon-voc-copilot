@@ -10,7 +10,7 @@
 
 [**Hosted Demo**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/) *(Streamlit sign-in currently required)* · [**Quick Start**](#本地运行) · [**3-Minute Interview Demo**](#三分钟面试演示) · [**English Docs**](docs/README.en.md)
 
-![Evidence ledger showing traceable VOC claims, support and counter-evidence](docs/assets/voc-evidence-ledger.png)
+![Evidence ledger showing a traceable VOC claim with support and counter-evidence counts](docs/assets/voc-evidence-ledger.png)
 
 ## 30 秒看懂项目
 
@@ -272,7 +272,7 @@ python -m pytest -q
 
 本项目基于 [`kirrrto/amazon-market-research-dashboard`](https://github.com/kirrrto/amazon-market-research-dashboard) 扩展，保留其 Streamlit 市场调研、数据导入、利润估算、规格分析和项目工作台基础，并新增 Evidence-Backed VOC 工作流。感谢上游作者与贡献者。
 
-上游项目采用 MIT License。本仓库保留根目录 [`LICENSE`](LICENSE) 中的 MIT 许可文本；使用、修改或再分发时应继续保留该版权与许可声明。本说明不改变许可证原文。
+上游项目采用 MIT License。本仓库保留上游的版权与许可声明，并在根目录 [`LICENSE`](LICENSE) 中补全上游文件缺失的标准 MIT 免责声明段落。使用、修改或再分发时应继续保留该声明。
 
 原市场调研功能的详细文档仍可参考：
 
