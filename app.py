@@ -84,10 +84,8 @@ def _language_select(label: str, default: str = "en") -> str:
 
 
 with st.sidebar:
+    sidebar_identity = st.empty()
     language = _language_select("Language / 语言", "zh-CN")
-
-st.title(t("app_title", language))
-st.caption(t("app_caption", language))
 
 
 def _localized_frame(frame: pd.DataFrame, language: str) -> pd.DataFrame:
@@ -208,10 +206,24 @@ with st.sidebar:
 
 
 if data_source_mode == "voc":
+    sidebar_identity.markdown(
+        """
+        <div class="voc-sidebar-brand">
+          <span class="voc-sidebar-mark">V</span>
+          <span>
+            <strong>Evidence Ledger</strong>
+            <small>Amazon VOC Copilot</small>
+          </span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     render_voc_dashboard(language=language)
     st.stop()
 
 
+st.title(t("app_title", language))
+st.caption(t("app_caption", language))
 
 if data_source_mode == "workspace":
     st.subheader("Project Workspace" if language == "en" else "项目工作台")
