@@ -736,30 +736,6 @@ def inject_app_styles() -> None:
           border-color: var(--voc-support);
           color: var(--voc-forest);
         }
-        [data-testid="stSidebar"]
-        [data-testid="stFileUploader"]
-        [data-testid="stMarkdownContainer"] p {
-          color: var(--voc-ink);
-        }
-        [data-testid="stSidebar"]
-        [data-testid="stFileUploader"]
-        [data-testid="stBaseButton-secondary"]
-        [data-testid="stMarkdownContainer"] p {
-          color: var(--voc-forest);
-        }
-        [data-testid="stSidebar"]
-        [data-testid="stFileUploader"]
-        [data-testid="stFileUploaderDropzoneInstructions"] span {
-          color: var(--voc-muted);
-        }
-        [data-testid="stSidebar"]
-        [data-testid="stFileUploader"]
-        [data-testid="stTooltipIcon"],
-        [data-testid="stSidebar"]
-        [data-testid="stFileUploader"]
-        [data-testid="stTooltipIcon"] button {
-          color: var(--voc-muted);
-        }
         button:focus-visible,
         input:focus-visible,
         textarea:focus-visible,

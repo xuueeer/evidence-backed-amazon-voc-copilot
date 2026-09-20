@@ -66,6 +66,37 @@ st.set_page_config(
     layout="wide",
 )
 inject_app_styles()
+st.markdown(
+    """
+    <style>
+    [data-testid="stSidebar"]
+    [data-testid="stFileUploader"]
+    [data-testid="stMarkdownContainer"] p {
+      color: var(--voc-ink);
+    }
+    [data-testid="stSidebar"]
+    [data-testid="stFileUploader"]
+    [data-testid="stBaseButton-secondary"]
+    [data-testid="stMarkdownContainer"] p {
+      color: var(--voc-forest);
+    }
+    [data-testid="stSidebar"]
+    [data-testid="stFileUploader"]
+    [data-testid="stFileUploaderDropzoneInstructions"] span {
+      color: var(--voc-muted);
+    }
+    [data-testid="stSidebar"]
+    [data-testid="stFileUploader"]
+    [data-testid="stTooltipIcon"],
+    [data-testid="stSidebar"]
+    [data-testid="stFileUploader"]
+    [data-testid="stTooltipIcon"] button {
+      color: var(--voc-muted);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 sample_path = Path(__file__).parent / "data" / "sample_products.csv"
 

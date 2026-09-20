@@ -19,3 +19,13 @@ def test_streamlit_theme_matches_evidence_workspace_palette():
         "textColor": "#17352D",
         "font": "sans serif",
     }
+
+
+def test_app_entrypoint_protects_sidebar_uploader_contrast():
+    app_source = Path("app.py").read_text(encoding="utf-8")
+
+    assert '[data-testid="stFileUploader"]' in app_source
+    assert '[data-testid="stFileUploaderDropzoneInstructions"] span' in app_source
+    assert "color: var(--voc-ink);" in app_source
+    assert "color: var(--voc-forest);" in app_source
+    assert "color: var(--voc-muted);" in app_source
