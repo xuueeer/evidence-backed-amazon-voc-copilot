@@ -1,12 +1,20 @@
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 
+from src.voc import analyze_reviews, read_review_csv
 from src.voc.models import AnalysisResult, Insight, Recommendation, ReviewRecord
 from src.voc_dashboard import (
+    SAMPLE_REVIEWS,
     _display_rationale,
     _evidence_balance,
     _evidence_card_html,
+    _evidence_column_html,
+    _evidence_landscape_html,
+    _filter_reviews,
+    _filtered_insights,
     _recommendation_card_html,
     _recommendation_for_insight,
     _replace_cached_result,
@@ -14,8 +22,77 @@ from src.voc_dashboard import (
     _status_presentation,
     _stretch_kwargs,
     _summary_grid_html,
+    download_button_options,
     inject_app_styles,
 )
+
+
+def test_download_options_retain_legacy_streamlit_support(monkeypatch) -> None:
+    def legacy_button(*, use_container_width=False):
+        pass
+
+    monkeypatch.setattr("src.voc_dashboard.st.download_button", legacy_button)
+    assert download_button_options() == {"use_container_width": True}
+
+    def modern_button(*, width="content", icon=None):
+        pass
+
+    monkeypatch.setattr("src.voc_dashboard.st.download_button", modern_button)
+    assert download_button_options() == {"width": "stretch", "icon": ":material/download:"}
+
+
+def test_decision_filter_partitions_without_changing_analysis() -> None:
+    result = analyze_reviews(read_review_csv(SAMPLE_REVIEWS))
+    actionable = _filtered_insights(result, "actionable")
+    unresolved = _filtered_insights(result, "unresolved")
+    assert len(actionable) == 1
+    assert len(unresolved) == 2
+    assert {item.insight_id for item in actionable + unresolved} == {
+        item.insight_id for item in result.insights
+    }
+    assert _filtered_insights(result, "all") == result.insights
+    assert len(result.reviews) == 30
+    assert len(result.recommendations) == 1
+
+
+def test_source_search_combines_product_and_case_insensitive_text() -> None:
+    result = analyze_reviews(read_review_csv(SAMPLE_REVIEWS))
+    assert [item.review_id for item in _filter_reviews(result.reviews, " r001 ")] == ["R001"]
+    assert _filter_reviews(result.reviews, "R001", "B0FIT002") == []
+    assert _filter_reviews(result.reviews, "EARBUDS", "B0FIT001")
+    assert _filter_reviews(result.reviews, "not-present-anywhere") == []
+    assert len(_filter_reviews(result.reviews, "")) == 30
+
+
+def test_landscape_uses_shared_scale_and_exposes_counts_to_screen_readers() -> None:
+    result = analyze_reviews(read_review_csv(SAMPLE_REVIEWS))
+    html = _evidence_landscape_html(result, "en")
+    assert 'role="img"' in html
+    assert 'Fit and comfort: 5 supporting / 3 counter' in html
+    assert 'width:62.5000%' in html
+    assert 'width:25.0000%' in html
+    assert _evidence_landscape_html(AnalysisResult(), "en") == '<div class="voc-landscape"></div>'
+
+
+def test_collapsed_evidence_keeps_every_reference_and_original_text() -> None:
+    result = analyze_reviews(read_review_csv(SAMPLE_REVIEWS))
+    insight = result.insights[0]
+    index = {review.review_id: review for review in result.reviews}
+    html = _evidence_column_html(index, insight.supporting_review_ids, "supporting", "en")
+    assert '<details class="voc-evidence-more">' in html
+    assert 'Show 2 more reviews' in html
+    for review_id in insight.supporting_review_ids:
+        assert review_id in html
+        assert index[review_id].review_text in html
+
+
+def test_landscape_escapes_custom_topic_names() -> None:
+    insight = _insight(supporting_review_ids=[])
+    result = AnalysisResult(insights=[replace(insight, topic='<img src=x onerror=alert(1)>')])
+    html = _evidence_landscape_html(result, "en")
+    assert '<img' not in html
+    assert '&lt;img' in html
+    assert 'width:0.0000%' in html
 
 
 def test_stretch_kwargs_supports_old_and_new_streamlit_apis() -> None:

@@ -50,7 +50,11 @@ from src.importers.tabular import (
 from src.importers.validation import validate_and_clean_import
 from src.specs import list_spec_profiles
 from src.templates import build_template_workbook, list_template_definitions
-from src.voc_dashboard import inject_app_styles, render_voc_dashboard
+from src.voc_dashboard import (
+    download_button_options,
+    inject_app_styles,
+    render_voc_dashboard,
+)
 from src.workspace import (
     build_project_workspace,
     export_workspace_json,
@@ -224,12 +228,14 @@ def _show_template_center(language: str) -> None:
         "vehicle_camera_specs": "download_vehicle_camera_template",
     }
 
-    for definition in list_template_definitions():
-        with st.container(border=True):
+    columns = st.columns(2)
+    for index, definition in enumerate(list_template_definitions()):
+        with columns[index % 2].container(border=True):
             st.markdown(f"### {definition.title(language)}")
             st.write(definition.description(language))
             st.download_button(
                 t(button_keys[definition.template_id], language),
+                **download_button_options(),
                 data=build_template_workbook(definition.template_id, language),
                 file_name=definition.file_name,
                 mime=(
@@ -241,7 +247,7 @@ def _show_template_center(language: str) -> None:
 
 
 with st.sidebar:
-    st.header(t("data_source", language))
+    st.caption("WORKSPACE" if language == "en" else "工作空间")
 
     mode_labels = {
         "voc": t("voc_evidence_ledger", language),
@@ -260,6 +266,7 @@ with st.sidebar:
         t("input_mode", language),
         list(mode_labels.values()),
         index=0,
+        label_visibility="collapsed",
     )
     data_source_mode = {
         value: key for key, value in mode_labels.items()

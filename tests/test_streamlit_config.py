@@ -14,7 +14,7 @@ def test_streamlit_theme_matches_evidence_workspace_palette():
 
     assert config["theme"] == {
         "primaryColor": "#117A63",
-        "backgroundColor": "#F1F6F3",
+        "backgroundColor": "#F8FAF9",
         "secondaryBackgroundColor": "#FFFFFF",
         "textColor": "#17352D",
         "font": "sans serif",

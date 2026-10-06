@@ -116,6 +116,13 @@ def _stretch_kwargs(component: Any) -> dict[str, Any]:
     return {"use_container_width": True}
 
 
+def download_button_options() -> dict[str, Any]:
+    options = _stretch_kwargs(st.download_button)
+    if "icon" in inspect.signature(st.download_button).parameters:
+        options["icon"] = ":material/download:"
+    return options
+
+
 def inject_app_styles() -> None:
     st.markdown(
         """
@@ -133,7 +140,7 @@ def inject_app_styles() -> None:
           --voc-ink: #17352d;
           --voc-muted: #5f736d;
           --voc-line: #cbdad4;
-          --voc-canvas: #f1f6f3;
+          --voc-canvas: #f8faf9;
           --voc-panel: #ffffff;
         }
         .stApp {
@@ -143,14 +150,19 @@ def inject_app_styles() -> None:
             "Segoe UI", sans-serif;
         }
         .stApp * { letter-spacing: 0; }
+        [data-testid="stRadio"] label { min-height: 44px; align-items: center; }
+        [data-testid="stRadio"] label:has(input:focus-visible) {
+          outline: 3px solid #0e7490;
+          outline-offset: 2px;
+        }
         [data-testid="stAppViewContainer"] .block-container {
-          max-width: 1260px;
-          padding-top: 2rem;
+          max-width: 1480px;
+          padding-top: 2.5rem;
           padding-bottom: 3rem;
         }
         [data-testid="stSidebar"] {
-          background: var(--voc-forest);
-          border-right: 1px solid #24584c;
+          background: #ffffff;
+          border-right: 1px solid var(--voc-line);
         }
         [data-testid="stSidebar"] h1,
         [data-testid="stSidebar"] h2,
@@ -158,12 +170,27 @@ def inject_app_styles() -> None:
         [data-testid="stSidebar"] label,
         [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
         [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
-          color: #edf6f2;
+          color: var(--voc-ink);
         }
         [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
-          color: #a9c2ba;
+          color: var(--voc-muted);
         }
-        [data-testid="stSidebar"] hr { border-color: #2a5a4f; }
+        [data-testid="stSidebar"] hr { border-color: var(--voc-line); }
+        [data-testid="stSidebar"] [data-testid="stRadio"] label {
+          min-height: 44px;
+          padding: 8px 10px;
+          border-radius: 6px;
+          transition: background 180ms ease;
+        }
+        [data-testid="stSidebar"] [data-testid="stRadio"] label:hover {
+          background: #f1f6f3;
+        }
+        [data-testid="stSidebar"] [data-testid="stRadio"] label:has(input:checked) {
+          background: var(--voc-support-soft);
+        }
+        [data-testid="stSidebar"] [data-testid="stRadio"] label p {
+          font-size: 0.9rem;
+        }
         .voc-sidebar-brand {
           align-items: center;
           display: flex;
@@ -176,13 +203,13 @@ def inject_app_styles() -> None:
           overflow-wrap: anywhere;
         }
         .voc-sidebar-brand strong {
-          color: #ffffff;
+          color: var(--voc-forest);
           font-size: 0.94rem;
           font-weight: 650;
         }
         .voc-sidebar-brand small {
-          color: #adc7bf;
-          font-size: 0.72rem;
+          color: var(--voc-muted);
+          font-size: 0.8rem;
           margin-top: 2px;
         }
         .voc-sidebar-mark {
@@ -208,6 +235,7 @@ def inject_app_styles() -> None:
           font-weight: 680;
           line-height: 1.15;
           margin: 6px 0 9px;
+          padding: 0;
           overflow-wrap: anywhere;
         }
         .app-page-header p {
@@ -224,19 +252,20 @@ def inject_app_styles() -> None:
           text-transform: uppercase;
         }
         .voc-hero {
-          align-items: stretch;
+          align-items: center;
           display: grid;
           gap: 20px;
           grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
-          margin: 4px 0 18px;
+          margin: 4px 0 8px;
         }
         .voc-hero-copy { padding: 5px 0 2px; }
         .voc-hero h1 {
           color: var(--voc-forest-2);
-          font-size: 2.1rem;
+          font-size: 2rem;
           font-weight: 680;
           line-height: 1.15;
-          margin: 5px 0 8px;
+          margin: 8px 0 10px;
+          padding: 0;
         }
         .voc-hero p {
           color: var(--voc-muted);
@@ -252,20 +281,18 @@ def inject_app_styles() -> None:
         }
         .voc-status-card {
           align-items: flex-start;
-          background: var(--voc-amber-soft);
-          border: 1px solid #e7bf76;
-          border-radius: 8px;
+          background: transparent;
+          border-left: 2px solid #e7bf76;
           display: flex;
           gap: 11px;
-          min-height: 84px;
-          padding: 18px 20px;
+          padding: 8px 0 8px 18px;
         }
         .voc-status-card.ready {
-          background: var(--voc-support-soft);
+          background: transparent;
           border-color: #9bcdbd;
         }
         .voc-status-card.insufficient {
-          background: var(--voc-red-soft);
+          background: transparent;
           border-color: #e2aaa6;
         }
         .voc-status-dot {
@@ -285,24 +312,22 @@ def inject_app_styles() -> None:
         }
         .voc-status-detail {
           color: var(--voc-muted);
-          font-size: 0.78rem;
+          font-size: 0.85rem;
           line-height: 1.45;
           margin-top: 4px;
         }
         .voc-provenance {
           align-items: center;
-          background: #ffffff;
-          border: 1px solid var(--voc-line);
-          border-radius: 8px;
+          border-bottom: 1px solid var(--voc-line);
           display: flex;
           gap: 12px;
-          margin: 12px 0 18px;
+          margin: 0 0 16px;
           min-height: 50px;
-          padding: 10px 14px;
+          padding: 12px 0 16px;
         }
         .voc-provenance-mark {
           align-items: center;
-          background: #7c918a;
+          background: var(--voc-forest);
           border-radius: 50%;
           color: #ffffff;
           display: inline-flex;
@@ -315,7 +340,7 @@ def inject_app_styles() -> None:
         }
         .voc-provenance-label {
           color: var(--voc-ink);
-          font-size: 0.78rem;
+          font-size: 0.85rem;
           font-weight: 700;
           white-space: nowrap;
         }
@@ -337,32 +362,32 @@ def inject_app_styles() -> None:
         }
         .voc-summary-grid {
           display: grid;
-          gap: 10px;
+          gap: 0;
           grid-template-columns: repeat(4, minmax(0, 1fr));
-          margin: 0 0 28px;
+          margin: 0 0 20px;
         }
         .voc-metric-card {
-          background: var(--voc-panel);
-          border: 1px solid var(--voc-line);
-          border-radius: 8px;
-          min-height: 108px;
-          padding: 15px 17px;
+          border-right: 1px solid var(--voc-line);
+          min-height: 100px;
+          padding: 4px 22px;
         }
+        .voc-metric-card:first-child { padding-left: 0; }
+        .voc-metric-card:last-child { border-right: 0; }
         .voc-metric-label {
           color: var(--voc-muted);
-          font-size: 0.76rem;
+          font-size: 0.85rem;
           font-weight: 650;
         }
         .voc-metric-value {
           color: var(--voc-forest-2);
-          font-size: 1.72rem;
+          font-size: 2rem;
           font-weight: 620;
           line-height: 1.15;
           margin: 10px 0 3px;
         }
         .voc-metric-note {
-          color: #657972;
-          font-size: 0.7rem;
+          color: var(--voc-muted);
+          font-size: 0.8rem;
           line-height: 1.4;
           overflow-wrap: anywhere;
         }
@@ -377,26 +402,28 @@ def inject_app_styles() -> None:
           font-size: 1.28rem;
           font-weight: 650;
           margin: 0;
+          padding: 0;
         }
         .voc-section-head p {
           color: var(--voc-muted);
-          font-size: 0.76rem;
+          font-size: 0.85rem;
           margin: 4px 0 0;
         }
         .voc-analysis-shell {
           background: #ffffff;
-          border: 1px solid var(--voc-line);
-          border-radius: 8px;
+          border-top: 1px solid var(--voc-line);
+          border-bottom: 1px solid var(--voc-line);
           display: grid;
-          grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.95fr);
+          grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
           margin-bottom: 12px;
           overflow: hidden;
         }
-        .voc-insight-pane { min-width: 0; padding: 20px; }
+        .voc-insight-pane { min-width: 0; padding: 24px; }
         .voc-decision-pane {
           border-left: 1px solid var(--voc-line);
           min-width: 0;
-          padding: 20px;
+          padding: 24px;
+          background: #f1f6f3;
         }
         .voc-insight-title-row {
           align-items: center;
@@ -413,14 +440,14 @@ def inject_app_styles() -> None:
         }
         .voc-insight-title {
           color: var(--voc-forest-2);
-          font-size: 1.04rem;
+          font-size: 1.2rem;
           font-weight: 680;
           margin-right: auto;
           overflow-wrap: anywhere;
         }
         .voc-claim {
           color: var(--voc-ink);
-          font-size: 0.92rem;
+          font-size: 1rem;
           font-weight: 560;
           line-height: 1.58;
           margin: 0 0 18px;
@@ -431,7 +458,7 @@ def inject_app_styles() -> None:
           border: 1px solid var(--voc-line);
           border-radius: 999px;
           display: inline-block;
-          font-size: 0.68rem;
+          font-size: 0.8rem;
           font-weight: 650;
           padding: 4px 10px;
           white-space: nowrap;
@@ -446,7 +473,7 @@ def inject_app_styles() -> None:
           align-items: center;
           color: var(--voc-muted);
           display: flex;
-          font-size: 0.72rem;
+          font-size: 0.8rem;
           justify-content: space-between;
           margin-bottom: 6px;
         }
@@ -470,7 +497,7 @@ def inject_app_styles() -> None:
           border: 1px solid var(--voc-line);
           border-radius: 999px;
           color: var(--voc-muted);
-          font-size: 0.7rem;
+          font-size: 0.8rem;
           padding: 4px 10px;
         }
         .voc-stat-chip.support { background: var(--voc-support-soft); border-color: #b6dace; color: #0c6b56; }
@@ -478,7 +505,7 @@ def inject_app_styles() -> None:
         .voc-evidence-columns {
           border-top: 1px solid var(--voc-line);
           display: grid;
-          gap: 20px;
+          gap: 16px;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           padding-top: 16px;
         }
@@ -490,7 +517,7 @@ def inject_app_styles() -> None:
           align-items: center;
           color: var(--voc-ink);
           display: flex;
-          font-size: 0.76rem;
+          font-size: 0.85rem;
           font-weight: 700;
           justify-content: space-between;
           margin-bottom: 9px;
@@ -499,19 +526,21 @@ def inject_app_styles() -> None:
           background: #fbfdfc;
           border-left: 4px solid var(--voc-support);
           margin-bottom: 9px;
-          padding: 9px 10px;
+          padding: 12px;
+          border-radius: 0 4px 4px 0;
         }
         .voc-evidence.contradicting { background: #fffafa; border-left-color: var(--voc-red); }
         .voc-review-id {
-          color: #657972;
-          font-size: 0.66rem;
+          color: var(--voc-muted);
+          font-size: 0.75rem;
+          font-variant-numeric: tabular-nums;
           font-weight: 650;
           overflow-wrap: anywhere;
         }
         .voc-review-text {
           color: var(--voc-ink);
-          font-size: 0.78rem;
-          line-height: 1.52;
+          font-size: 0.9rem;
+          line-height: 1.65;
           margin-top: 5px;
           overflow-wrap: anywhere;
         }
@@ -524,13 +553,13 @@ def inject_app_styles() -> None:
           background: #fbfcfb;
           border-top: 1px solid var(--voc-line);
           color: var(--voc-muted);
-          font-size: 0.72rem;
-          line-height: 1.5;
-          margin: 16px -20px -20px;
-          padding: 11px 20px;
+          font-size: 0.85rem;
+          line-height: 1.65;
+          margin: 20px 0 0;
+          padding: 14px 0 0;
         }
         .voc-unknown-strip strong { color: var(--voc-amber); margin-right: 10px; }
-        .voc-decision-kicker { color: var(--voc-support); font-size: 0.7rem; font-weight: 700; }
+        .voc-decision-kicker { color: var(--voc-support); font-size: 0.8rem; font-weight: 700; }
         .voc-decision-title {
           border-bottom: 1px solid var(--voc-line);
           color: var(--voc-forest-2);
@@ -542,19 +571,19 @@ def inject_app_styles() -> None:
         }
         .voc-decision-label {
           color: var(--voc-support);
-          font-size: 0.7rem;
+          font-size: 0.8rem;
           font-weight: 700;
           margin-bottom: 7px;
         }
         .voc-decision-body {
           color: var(--voc-ink);
-          font-size: 0.82rem;
+          font-size: 0.95rem;
           line-height: 1.58;
           overflow-wrap: anywhere;
         }
         .voc-decision-meta {
           color: var(--voc-muted);
-          font-size: 0.72rem;
+          font-size: 0.85rem;
           line-height: 1.5;
           margin-top: 8px;
           overflow-wrap: anywhere;
@@ -565,7 +594,38 @@ def inject_app_styles() -> None:
           padding-top: 14px;
         }
         .voc-risk-block ul { margin: 7px 0 0; padding-left: 18px; }
-        .voc-risk-block li { color: var(--voc-muted); font-size: 0.74rem; line-height: 1.6; }
+        .voc-risk-block li { color: var(--voc-muted); font-size: 0.85rem; line-height: 1.6; }
+        .voc-landscape {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 24px;
+          padding: 18px 0;
+          border-bottom: 1px solid var(--voc-line);
+          margin-bottom: 8px;
+        }
+        .voc-landscape-topic { min-width: 0; }
+        .voc-landscape-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .voc-landscape-head strong { font-size: 0.9rem; }
+        .voc-landscape-count { font-size: 0.8rem; color: var(--voc-muted); margin-top: 8px; }
+        .voc-landscape-track { height: 6px; display: flex; background: #e3e9e6; margin-top: 14px; overflow: hidden; }
+        .voc-landscape-track span { min-width: 0; }
+        .voc-evidence-more summary,
+        .voc-unknown-strip summary {
+          cursor: pointer;
+          min-height: 44px;
+          display: list-item;
+          align-content: center;
+          color: var(--voc-forest);
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+        .voc-evidence-more summary:hover { color: var(--voc-support); }
+        .voc-evidence-more summary:focus-visible,
+        .voc-unknown-strip summary:focus-visible {
+          outline: 3px solid #0e7490;
+          outline-offset: 2px;
+        }
+        .voc-footer { color: var(--voc-muted); border-top: 1px solid var(--voc-line); margin-top: 28px; padding-top: 16px; font-size: 0.8rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
         .voc-risk-block li::marker { color: var(--voc-amber); }
         .voc-other-heading {
           color: var(--voc-forest-2);
@@ -711,11 +771,13 @@ def inject_app_styles() -> None:
           min-height: 44px;
         }
         [data-testid="stNumberInput"] button,
+        [data-testid="stPopover"] button,
         [data-testid="stSelectbox"] button,
         [data-testid="stMultiSelect"] button {
           min-height: 44px;
           min-width: 44px;
         }
+        [data-testid="stSelectbox"] [role="combobox"] { min-height: 44px; }
         [data-testid="stSidebar"] [data-testid="stNumberInput"] input,
         [data-testid="stSidebar"] [data-baseweb="select"] > div {
           background: #ffffff;
@@ -745,12 +807,18 @@ def inject_app_styles() -> None:
           outline-offset: 2px;
         }
         @media (prefers-reduced-motion: reduce) {
-          .stButton button,
-          .stDownloadButton button { transition: none; }
+          .stApp *, .stApp *::before, .stApp *::after {
+            transition: none !important;
+            animation: none !important;
+            scroll-behavior: auto !important;
+          }
         }
         @media (max-width: 1023px) {
           .voc-hero { grid-template-columns: 1fr; }
           .voc-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+          .voc-metric-card { padding: 12px 16px; }
+          .voc-metric-card:nth-child(odd) { padding-left: 0; }
+          .voc-metric-card:nth-child(even) { border-right: 0; }
           .voc-analysis-shell { grid-template-columns: 1fr; }
           .voc-decision-pane { border-left: 0; border-top: 1px solid var(--voc-line); }
         }
@@ -780,11 +848,16 @@ def inject_app_styles() -> None:
           }
           .voc-insight-pane,
           .voc-decision-pane { padding: 16px; }
-          .voc-unknown-strip { margin: 16px -16px -16px; padding: 11px 16px; }
+          .voc-unknown-strip { margin: 16px 0 0; padding: 11px 0; }
+          .voc-landscape { gap: 12px; }
+          .voc-landscape-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+          .voc-landscape-head strong { font-size: 0.85rem; line-height: 1.5; }
+          .voc-landscape-count { font-size: 0.8rem; line-height: 1.5; }
+          .voc-landscape .voc-badge { padding: 3px 8px; }
+          .voc-metric-note { font-size: 0.8rem; }
         }
         @media (max-width: 420px) {
-          .voc-summary-grid { grid-template-columns: 1fr; }
-          .voc-metric-card { min-height: 96px; }
+          .voc-metric-card { min-height: 110px; }
           .voc-section-head { align-items: flex-start; flex-direction: column; gap: 6px; }
         }
         </style>
@@ -1033,9 +1106,9 @@ def _workspace_header_html(
     return (
         '<div class="voc-hero">'
         '<div class="voc-hero-copy">'
-        '<div class="voc-kicker">Evidence ledger · Amazon US</div>'
+        '<div class="voc-kicker">Evidence Ledger / Amazon VOC</div>'
         f'<h1>{escape(_tr(language, "Review evidence workspace", "评论证据工作台"))}</h1>'
-        f'<p>{escape(_tr(language, "Separate support, counter-evidence and unknowns before deciding whether a customer insight is actionable.", "把评论拆成支持、反向证据和未知项，再判断洞察是否值得行动。"))}</p>'
+        f'<p>{escape(_tr(language, "Customer signals. Traceable evidence. Considered decisions.", "用户声音，原文佐证，审慎决策。"))}</p>'
         '</div>'
         f'<div class="voc-status-card {tone}">'
         '<span class="voc-status-dot"></span><div>'
@@ -1129,6 +1202,69 @@ def _summary_grid_html(
     return '<div class="voc-summary-grid">' + "".join(cards) + "</div>"
 
 
+def _evidence_landscape_html(result: AnalysisResult, language: str) -> str:
+    """Use one shared count scale; these bars are not confidence scores."""
+    maximum = max(
+        (item.support_count + item.contradiction_count for item in result.insights),
+        default=0,
+    )
+    topics = []
+    for insight in result.insights:
+        label = TOPIC_LABELS.get(insight.topic, {}).get(language, insight.topic)
+        strength = STRENGTH_LABELS.get(insight.evidence_strength, {}).get(
+            language, insight.evidence_strength
+        )
+        support = insight.support_count / maximum * 100 if maximum else 0
+        counter = insight.contradiction_count / maximum * 100 if maximum else 0
+        counts = _tr(
+            language,
+            f"{insight.support_count} supporting / {insight.contradiction_count} counter",
+            f"{insight.support_count} 条支持 / {insight.contradiction_count} 条反向",
+        )
+        topics.append(
+            '<div class="voc-landscape-topic">'
+            '<div class="voc-landscape-head">'
+            f'<strong>{escape(label)}</strong>'
+            f'<span class="voc-badge {escape(insight.evidence_strength)}">{escape(strength)}</span>'
+            '</div>'
+            f'<div class="voc-landscape-track" role="img" aria-label="{escape(label + ": " + counts)}">'
+            f'<span class="voc-balance-support" style="width:{support:.4f}%"></span>'
+            f'<span class="voc-balance-counter" style="width:{counter:.4f}%"></span>'
+            '</div>'
+            f'<div class="voc-landscape-count">{escape(counts)}</div></div>'
+        )
+    return '<div class="voc-landscape">' + ''.join(topics) + '</div>'
+
+
+def _filtered_insights(result: AnalysisResult, scope: str) -> list[Insight]:
+    if scope == "actionable":
+        return [
+            item for item in result.insights
+            if _recommendation_for_insight(result, item) is not None
+        ]
+    if scope == "unresolved":
+        return [
+            item for item in result.insights
+            if _recommendation_for_insight(result, item) is None
+        ]
+    return list(result.insights)
+
+
+def _filter_reviews(
+    reviews: list[ReviewRecord], query: str, product: str | None = None
+) -> list[ReviewRecord]:
+    term = query.strip().casefold()
+    return [
+        review for review in reviews
+        if (product is None or review.product_id == product)
+        and (
+            not term or term in ' '.join(
+                (review.review_id, review.product_id, review.review_text)
+            ).casefold()
+        )
+    ]
+
+
 def _evidence_card_html(review: ReviewRecord, role: str) -> str:
     safe_role = "contradicting" if role == "contradicting" else "supporting"
     rating = f"{review.rating:g}/5"
@@ -1179,6 +1315,13 @@ def _evidence_column_html(
             cards.append(_evidence_card_html(review, role))
     if not cards:
         cards.append(f'<div class="voc-empty-evidence">{escape(empty_text)}</div>')
+    if len(cards) > 3:
+        more_label = _tr(language, f"Show {len(cards) - 3} more reviews", f"展开其余 {len(cards) - 3} 条评论")
+        cards = cards[:3] + [
+            '<details class="voc-evidence-more">'
+            f'<summary>{escape(more_label)}</summary>'
+            + ''.join(cards[3:]) + '</details>'
+        ]
     return (
         '<div class="voc-evidence-column">'
         f'<div class="voc-evidence-heading"><span>{escape(heading)}</span>'
@@ -1209,7 +1352,15 @@ def _insight_panel_html(
     unknowns = [
         _display_unknown(item, language) for item in insight.unknowns
     ] or [_tr(language, "No rule-level unknowns declared.", "当前规则未声明未知项。")]
-    assumptions = insight.assumptions or [
+    assumption_labels = {
+        "English keyword matches are treated as topic evidence.": "英文关键词匹配被视为主题证据。",
+        "A low rating only supplies polarity when the review names the topic.": "仅在评论提及该主题时，低评分才用于判断倾向。",
+        "Evidence strength is a rule tier, not a probability.": "证据强度是规则等级，不是概率。",
+    }
+    assumptions = [
+        assumption_labels.get(item, item) if language == "zh-CN" else item
+        for item in insight.assumptions
+    ] or [
         _tr(language, "No extraction assumptions supplied.", "未提供抽取假设。")
     ]
     supporting_html = _evidence_column_html(
@@ -1254,7 +1405,9 @@ def _insight_panel_html(
         + '</div>'
         '<div class="voc-unknown-strip">'
         f'<strong>{escape(_tr(language, "Unknowns", "未知项"))}</strong>{escape(" · ".join(unknowns))}<br>'
-        f'<strong>{escape(_tr(language, "Assumptions", "分析假设"))}</strong>{escape(" · ".join(assumptions))}'
+        '<details>'
+        f'<summary>{escape(_tr(language, "Analysis assumptions", "分析假设"))}</summary>{escape(" · ".join(assumptions))}'
+        '</details>'
         '</div></div>'
     )
 
@@ -1386,20 +1539,44 @@ def _render_analysis_workspace(
         return
     heading = _tr(
         language,
-        "AI-assisted evidence ledger" if ai_assisted else "Evidence ledger",
-        "AI 辅助证据账本" if ai_assisted else "证据账本",
-    )
-    description = _tr(
-        language,
-        "Claims are shown with both supporting and contradicting source reviews.",
-        "每条结论同时展示支持与反向评论，不把未知项包装成结论。",
+        "AI-assisted topic signals" if ai_assisted else "Topic signals",
+        "AI 辅助主题信号" if ai_assisted else "主题信号",
     )
     st.markdown(
         '<div class="voc-section-head"><div>'
-        f'<h2>{escape(heading)}</h2><p>{escape(description)}</p>'
+        f'<h2>{escape(heading)}</h2>'
         '</div></div>',
         unsafe_allow_html=True,
     )
+    st.markdown(_evidence_landscape_html(result, language), unsafe_allow_html=True)
+    # Streamlit retains formatted option labels across reruns with the same key.
+    namespace = f"{'ai' if ai_assisted else 'rules'}_{language}"
+    topic_column, scope_column = st.columns([3, 1])
+    with scope_column:
+        scope = st.selectbox(
+            _tr(language, "Decision status", "决策状态"),
+            ["all", "actionable", "unresolved"],
+            format_func=lambda value: {
+                "all": _tr(language, "All topics", "全部主题"),
+                "actionable": _tr(language, "Actionable", "可执行"),
+                "unresolved": _tr(language, "Needs validation", "待验证"),
+            }[value],
+            key=f"voc_scope_{namespace}",
+        )
+    candidates = _filtered_insights(result, scope)
+    if not candidates:
+        st.info(_tr(language, "No topics match this status.", "当前状态下暂无主题。"))
+        return
+    with topic_column:
+        selected = st.radio(
+            _tr(language, "Review topic", "审阅主题"),
+            range(len(candidates)),
+            format_func=lambda index: TOPIC_LABELS.get(candidates[index].topic, {}).get(language, candidates[index].topic),
+            index=candidates.index(primary) if primary in candidates else 0,
+            horizontal=True,
+            key=f"voc_topic_{namespace}_{scope}",
+        )
+    primary = candidates[selected]
     primary_index = result.insights.index(primary) + 1
     st.markdown(
         _analysis_shell_html(
@@ -1420,35 +1597,6 @@ def _render_analysis_workspace(
             )
         )
         _render_evidence_rules(result, language)
-
-    remaining = [insight for insight in result.insights if insight is not primary]
-    if remaining:
-        st.markdown(
-            f'<div class="voc-other-heading">{escape(_tr(language, "Other topics", "其他主题"))}</div>',
-            unsafe_allow_html=True,
-        )
-    for insight in remaining:
-        topic = TOPIC_LABELS.get(insight.topic, {}).get(language, insight.topic)
-        strength = STRENGTH_LABELS.get(insight.evidence_strength, {}).get(
-            language, insight.evidence_strength
-        )
-        title = (
-            f"{topic} · {strength} · "
-            f"{insight.support_count}/{insight.contradiction_count} "
-            f"{_tr(language, 'support/counter', '支持/反向')}"
-        )
-        with st.expander(title, expanded=False):
-            st.markdown(
-                _analysis_shell_html(
-                    result,
-                    insight,
-                    language,
-                    sequence=result.insights.index(insight) + 1,
-                    preserve_claim=preserve_claim,
-                ),
-                unsafe_allow_html=True,
-            )
-
 
 def _recommendation_card_html(
     recommendation: Recommendation,
@@ -1502,7 +1650,7 @@ def _render_byok_result(result: AnalysisResult, language: str) -> None:
         file_name="voc_ai_evidence_audit.md",
         mime="text/markdown",
         key="voc_ai_download_markdown",
-        **_stretch_kwargs(st.download_button),
+        **download_button_options(),
     )
     download_columns[1].download_button(
         "CSV",
@@ -1510,7 +1658,7 @@ def _render_byok_result(result: AnalysisResult, language: str) -> None:
         file_name="voc_ai_evidence_ledger.csv",
         mime="text/csv",
         key="voc_ai_download_csv",
-        **_stretch_kwargs(st.download_button),
+        **download_button_options(),
     )
     download_columns[2].download_button(
         "JSON",
@@ -1518,7 +1666,7 @@ def _render_byok_result(result: AnalysisResult, language: str) -> None:
         file_name="voc_ai_analysis.json",
         mime="application/json",
         key="voc_ai_download_json",
-        **_stretch_kwargs(st.download_button),
+        **download_button_options(),
     )
 
 
@@ -1616,7 +1764,9 @@ def _render_byok(result: AnalysisResult, language: str) -> None:
 
 def render_voc_dashboard(*, language: str) -> None:
     header_slot = st.empty()
-    source = _review_source_control(language)
+    with st.sidebar:
+        st.divider()
+        source = _review_source_control(language)
     provenance_slot = st.empty()
     provenance_slot.markdown(
         _provenance_html(source, language),
@@ -1728,30 +1878,53 @@ def render_voc_dashboard(*, language: str) -> None:
             data=analysis_to_markdown(result),
             file_name="voc_evidence_audit.md",
             mime="text/markdown",
-            **_stretch_kwargs(st.download_button),
+            **download_button_options(),
         )
         download_columns[1].download_button(
             "CSV",
             data=analysis_to_csv(result),
             file_name="voc_evidence_ledger.csv",
             mime="text/csv",
-            **_stretch_kwargs(st.download_button),
+            **download_button_options(),
         )
         download_columns[2].download_button(
             "JSON",
             data=analysis_to_json(result),
             file_name="voc_analysis.json",
             mime="application/json",
-            **_stretch_kwargs(st.download_button),
+            **download_button_options(),
         )
         _render_byok(result, language)
 
     with tab_data:
+        search_column, product_column = st.columns([2, 1])
+        with search_column:
+            query = st.text_input(_tr(language, "Search source reviews", "搜索评论原文或编号"))
+        with product_column:
+            product = st.selectbox(
+                _tr(language, "Product", "商品"),
+                [None] + sorted({review.product_id for review in result.reviews}),
+                format_func=lambda value: value if value is not None else _tr(language, "All products", "全部商品"),
+            )
+        visible_reviews = _filter_reviews(result.reviews, query, product)
+        st.caption(_tr(language, f"{len(visible_reviews)} / {len(result.reviews)} reviews", f"显示 {len(visible_reviews)} / {len(result.reviews)} 条评论"))
+        visible_frame = pd.DataFrame(
+            [review.as_dict() for review in visible_reviews],
+            columns=_review_frame(result).columns,
+        )
         st.dataframe(
-            _review_frame(result),
+            visible_frame,
             hide_index=True,
             height=440,
             **_stretch_kwargs(st.dataframe),
+        )
+        st.download_button(
+            _tr(language, "Export selected reviews", "导出筛选后的评论"),
+            data=visible_frame.to_csv(index=False).encode("utf-8-sig"),
+            file_name="voc_filtered_reviews.csv",
+            mime="text/csv",
+            **download_button_options(),
+            disabled=not visible_reviews,
         )
         st.caption(
             _tr(
@@ -1760,3 +1933,8 @@ def render_voc_dashboard(*, language: str) -> None:
                 "修改或删除源评论后重新上传，所有计数与建议都会重新计算。",
             )
         )
+    st.markdown(
+        '<footer class="voc-footer"><span>Evidence Ledger / Amazon VOC Copilot</span>'
+        f'<span>{escape(_tr(language, "Rule-based analysis · Human review required", "规则分析 · 需人工复核"))}</span></footer>',
+        unsafe_allow_html=True,
+    )
