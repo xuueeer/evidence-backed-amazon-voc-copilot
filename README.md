@@ -1,16 +1,31 @@
 # Evidence-Backed Amazon VOC Copilot
 
-> 面向跨境电商选品与产品定义：让每条用户洞察都能回到评论原文，同时看见支持证据、反向证据和数据缺口。
+> AI 工具辅助构建的用户洞察与证据工作台。面向跨境电商选品与产品定义，让每条结论都能回到评论原文，同时看见支持证据、反向证据和未知项。
 
 [![CI](https://github.com/xuueeer/evidence-backed-amazon-voc-copilot/actions/workflows/tests.yml/badge.svg)](https://github.com/xuueeer/evidence-backed-amazon-voc-copilot/actions/workflows/tests.yml)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.35%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io/)
-[![Tests](https://img.shields.io/badge/tests-281%20passed-16A34A)](tests)
+[![Tests](https://img.shields.io/badge/tests-287%20passed-16A34A)](tests)
 [![License: MIT](https://img.shields.io/badge/License-MIT-0F766E.svg)](LICENSE)
 
-[**Open Demo**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true) *(anonymous embed entry)* · [**Quick Start**](#本地运行) · [**3-Minute Interview Demo**](#三分钟面试演示) · [**English Docs**](docs/README.en.md)
+[**打开在线作品**](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true) · [**新版功能**](#新版工作台) · [**本地运行**](#本地运行) · [**原市场调研英文文档**](docs/README.en.md)
 
-![Evidence ledger showing a traceable VOC claim with support and counter-evidence counts](docs/assets/voc-evidence-ledger.png)
+![已上线新版：白色侧栏、主题证据概览、审阅筛选及支持与反向证据对照](docs/assets/voc-workspace-2026-10.png)
+
+新版实机截图。公开演示无需 API Key；截图中的评论与指标来自合成样例，不代表真实市场结论。
+
+## 新版工作台
+
+2026-10-06 发布的新版保留原作品网址，重点改善证据阅读、检索与复核：
+
+- **统一工作空间**：VOC 证据账本、示例调研、CSV/Excel 上传、模板中心、项目工作台共用白色侧栏与墨绿色品牌。
+- **主题证据概览**：并列比较佩戴舒适度、耐用性、续航的支持与反向评论数量；条形采用共同计数尺度，不表示概率或模型置信度。
+- **主题与状态筛选**：按审阅主题及“全部主题 / 可执行 / 待验证”切换；筛选只改变展示，不修改证据计数与建议门槛。
+- **原文对照阅读**：支持与反向评论并排展示，长列表可展开，原始引用完整保留；未知项与分析假设可复核。
+- **搜索与导出**：按评论编号、商品编号或原文检索，结合商品筛选导出对应 CSV；无匹配结果时禁用导出。
+- **响应式与可读性**：完成 375、768、1024、1440、1920px 宽度检查；提供键盘焦点、触控控件及减少动画支持。
+
+已交付 **1 套证据复核工作流、5 种输入与工作模式、3 类审计导出**；截至 2026-10-07，本地全量测试为 **287 项通过**。这些是产品与工程验收结果，不是业务效率、销售增长或全站无障碍认证。
 
 ## 30 秒看懂项目
 
@@ -22,13 +37,13 @@
 | 即使数据不足也给出建议 | 低覆盖或冲突过高时标记 `unknown`，停止确定性建议 |
 | 结果难以留档复查 | 导出带原文引用的 Markdown / CSV / JSON 审计记录 |
 
-**演示路径：** `上传评论 → 查看痛点 → 展开证据 → 对照反向评论 → 查看证据强度 → 导出决策报告`
+**演示路径：** `载入样例或上传评论 → 比较主题信号 → 筛选审阅主题 → 对照支持与反向原文 → 检查未知项和决策门槛 → 导出审计记录`
 
 > **数据边界：** 内置 30 条评论和 4 个商品均为人工编写的合成数据。它们用于演示证据工作流，不代表真实 Amazon 市场、模型准确率或业务提升。本项目不是 Amazon 官方工具，不接入 Amazon 实时数据，也不绕过登录或网站访问限制。
 
-## Demo 状态
+## 在线演示
 
-已部署 [Streamlit Demo](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true)，内置 Mock 模式无需 API Key。默认根 URL 在当前 Streamlit 平台行为下会将无 Cookie 请求重定向到登录页，但公开的 `?embed=true` 入口已经过无账号浏览器验证，可直接打开 Mock 页面。
+新版已部署到 [Streamlit 在线作品](https://evidence-backed-amazon-voc-copilo-ciusxfofw77kvhpgccc3a9.streamlit.app/?embed=true)。发布后已在无账号浏览器中验证现有 `?embed=true` 入口、主题切换、原文搜索及手机页面。内置 Mock 分析无需 API Key，不调用大模型；使用可选 BYOK 抽取时才会向所选模型服务商发送评论数据。
 
 公共部署不启用商品 URL 抓取，也不配置共享模型密钥。
 
@@ -46,20 +61,30 @@
 
 `evidence_strength` 是透明的规则分级，不是统计置信度，也没有经过真实业务数据校准。
 
+## AI 工具协作路径
+
+本作品侧重探索非技术背景下的需求表达、AI 工具协作与产品迭代。创作者使用自然语言提出目标和验收标准，根据截图与实际操作反馈调整需求；ChatGPT、Codex 等 AI 工具协助完成流程梳理、代码生成、排错、测试及部署验证。
+
+1. **需求转流程**：明确“评论导入—主题分析—证据复核—建议与导出”的操作路径，先形成可操作原型。
+2. **反馈驱动迭代**：基于实机截图与体验完成四轮结构、响应式、操作检查和问题修正。
+3. **验证并上线**：检查上传、筛选、下载、语言切换和不同屏幕尺寸，再发布并复验在线版本。
+
+构建过程中使用 AI 工具，与应用运行时是否调用大模型是两件事。个人贡献重点是需求组织、结果复核与产品迭代，不将 AI 生成代码或测试表述为独立手写开发；目前也没有真实业务中的效率提升或销售效果数据。
+
 ## 一屏使用流程
 
 ```text
 载入 30 条合成评论或上传 CSV
               ↓
-查看痛点洞察（事实 / 推断 / 未知）
+比较主题信号，筛选主题与决策状态
               ↓
-展开证据，核对支持评论与反向评论
+查看洞察（事实 / 推断 / 未知），对照支持与反向原文
               ↓
 查看证据强度、覆盖率、涉及商品数和未知项
               ↓
 仅在证据门槛通过时查看建议
               ↓
-导出 Markdown / CSV / JSON 审计结果
+导出 Markdown / CSV / JSON 审计结果，或检索源数据并导出筛选 CSV
 ```
 
 修改、删除或替换源评论后，分析会从当前输入重新计算，不复用旧结论。
@@ -71,10 +96,13 @@
 - 校验并标准化评论 CSV，包括空评论、重复 `review_id`、非法评分和日期问题；
 - 在 Mock 模式下以确定性关键词规则识别佩戴舒适度、耐用性和电池/充电主题；
 - 聚合支持与反向证据，计算评论数、商品数和主题覆盖率；
+- 通过共享计数尺度的主题图、主题选择与决策状态筛选定位需要审阅的洞察；
+- 对照完整的支持与反向评论，按需展开长列表并查看分析假设；
+- 在源数据页搜索评论编号、商品编号与原文，并按商品筛选；
 - 公开低、中、高及证据不足的分级规则；
 - 当反向证据不少于支持证据，或样本未达到门槛时，将洞察降级为 `unknown`；
 - 每条可执行建议必须带有源评论 ID；无证据时不生成确定性建议；
-- 提供带原文引用的 Markdown、逐证据行 CSV 和完整 JSON 导出。
+- 提供带原文引用的 Markdown、逐证据行 CSV 和完整 JSON 导出，以及单独的筛选评论 CSV。
 
 ### 可选 BYOK 结构化提取
 
@@ -148,7 +176,7 @@ R001,B0FIT001,2,"The earbuds work loose when I run.",2026-05-03,demo_synthetic
 | 机会分数 | 销量、评论壁垒、评分缺口、品牌集中度和价格空间的加权规则 | 相同输入集内的早期排序 | 真实需求或未来销量 |
 | 利润估算 | 售价减产品、物流、平台、广告和退货假设 | 假设变化下的筛选结果 | 实际利润或会计结果 |
 
-证据等级的当前规则如下；界面中的“查看计算规则”和 JSON 导出也会带上同一份配置：
+证据等级的当前规则如下；界面中的“查看证据规则”和 JSON 导出也会带上同一份配置：
 
 | 等级 | 确定性门槛 |
 | --- | --- |
@@ -192,6 +220,7 @@ python -m streamlit run app.py
 - **Markdown 审计报告**：摘要、证据规则、每条洞察、支持原文、反向原文、建议及引用；
 - **CSV 证据明细**：每行一个洞察与评论引用关系，包含证据角色和源评论字段；
 - **JSON 完整结果**：适合程序继续处理，包含摘要、标准化评论、洞察、建议、校验问题和规则配置；
+- **筛选评论 CSV**：源数据页当前检索与商品筛选结果，保留评论字段；不同于逐证据行的审计 CSV；
 - **Excel / Workspace JSON**：来自原市场调研工作流，用于标准化商品、利润假设、规格和项目工作台交换。
 
 所有导出都只反映本次输入和当前规则，不应被描述为已验证的 Amazon 市场事实。
@@ -224,6 +253,7 @@ flowchart LR
 - `src/voc/analysis.py`：Mock 主题识别、冲突处理、证据等级和建议门槛；
 - `src/voc/export.py`：可审计的 Markdown、CSV 和 JSON 导出；
 - `src/voc_llm.py`：可选 OpenAI-compatible 请求、不可信输出校验与确定性 `AnalysisResult` 适配；
+- `src/voc_dashboard.py`：共享主题、证据工作台、主题与源数据筛选、BYOK 展示及导出入口；
 - `app.py`：Streamlit 入口，整合 VOC 与原市场调研功能。
 
 ## 测试与小型评测集
@@ -234,7 +264,9 @@ flowchart LR
 python -m pytest -q
 ```
 
-测试覆盖评论空值、重复 ID、非法评分、反向证据、低覆盖率、无证据建议、源评论变更后的重新计算、导出引用、非法 LLM JSON、未知引用和 API 错误脱敏等场景。
+截至 2026-10-07，本地全量运行结果为 `287 passed`。上方 CI 徽章反映 GitHub Actions 状态；测试数量徽章是本次验证快照，不自动统计。
+
+测试覆盖评论空值、重复 ID、非法评分、反向证据、低覆盖率、无证据建议、源评论变更后的重新计算、导出引用、非法 LLM JSON、未知引用和 API 错误脱敏等场景；新版新增筛选集合、组合搜索、主题图共同比例尺、折叠证据完整性、HTML 转义及下载控件版本兼容检查。
 
 [`data/evaluation/review_annotations.csv`](data/evaluation/review_annotations.csv) 为 30 条合成耳机评论提供人工编写的期望主题与支持/反向标签。它只用于发现功能回归，**不是**模型准确率、统计校准结果或真实 Amazon 评论上的性能证明；详见 [`docs/evaluation.md`](docs/evaluation.md)。
 
